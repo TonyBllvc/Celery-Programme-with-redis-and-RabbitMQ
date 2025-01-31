@@ -10,6 +10,7 @@ from .tasks import *
 @api_view(['GET'])
 def get_messages(request):
     messages = Message.objects.all()
+    add.delay(1, 2)
     serializer = MessageSerializer(messages, many=True)
     return Response({ 'data': serializer.data}, status=status.HTTP_200_OK)
 
@@ -17,6 +18,7 @@ def get_messages(request):
 def create_message(request):
     serializer = MessageSerializer(data=request.data)
     add.delay(1, 2)
+    # multiply.delay(2,3)
     
     if serializer.is_valid():
         serializer.save()

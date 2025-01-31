@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 
     'message_board',
     'rest_framework',
+    'django_celery_results', # to store tasks
+    'django_celery_beat', # to time tasks
     
 ]
 
@@ -192,3 +194,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP=True
+
+# For django-celery-results
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True

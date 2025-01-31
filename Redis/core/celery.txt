@@ -1,0 +1,62 @@
+# Installations of celery and it's components on redis
+pip install flower
+pip install celery
+pip install django-celery-results (for keep records of background tasks ran)
+pip install django-celery-beat (for timely triggered tasks)
+
+- core - name of the default project folder
+- celery_ap - name of the celery_app running(based on the __init__.py file)
+
+: ##  After installing celery, how to run it
+:- celery -A core worker -P solo
+
+: ## other options
+:- celery -A core worker -P threads
+:- celery -A core worker -P gevent 
+## Note, the core represents the main folder of your django project
+
+
+: ## For installation of a way to store celery data 
+- pip install django-celery-results
+
+## Next go to settings and add this 
+: 'django_celery_results'(add this to installed package applications)
+
+: ##  For django-celery-results(add to settings)
+: CELERY_RESULT_BACKEND = 'django-db'
+: CELERY_RESULT_EXTENDED = True 
+
+: ## then migrate
+
+: ###& For monitoring celery with flower package system(to initiate the programme)
+*## Now first off, define this unless by default, it is just app
+---- __init__.py file within the main app ---
+from .celery import app as celery_app
+
+__all__ = ('celery_app', )
+---- end ---
+*## then run(if __init__.py file exists)
+:- celery -A core.celery_app flower 
+
+*## and run(if __init__.py file does not exists)
+:- celery -A core.app flower 
+
+: ## For authentication on celery flower
+:-  celery -A core.celery_app flower --basic_auth=username:password
+
+
+: ## For installation of a way to time background tasks 
+- pip install django-celery-beat
+
+## Next go to settings and add this 
+: 'django_celery_beat'(add this to installed package applications)
+
+*## Go into the django admin panel, select from:
+* 1. Clocked (specific time for single executions)
+* 2. Crontabs (specific periodic tasks)
+* 3. Intervals (executes at fixed intervals of time)
+* 4. Periodic Tasks (define task schedules)
+* 5. Solar events (dictated by solar happenings)
+
+*## and run(from terminal)
+celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseSchedular
